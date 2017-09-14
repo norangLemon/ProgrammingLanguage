@@ -3,9 +3,9 @@ type nat = ZERO | SUCC of nat
 let rec natadd: nat * nat -> nat = fun (a, b) ->
     match a with
     | ZERO -> b
-    | SUCC n -> natadd (a, SUCC b)
+    | SUCC n -> natadd (n, SUCC b)
 
-let rec netmul: nat * nat -> nat = fun (a, b) ->
+let rec natmul: nat * nat -> nat = fun (a, b) ->
     match b with
     | ZERO -> ZERO
-    | SUCC n -> natadd (netmul(a, n), a)
+    | SUCC n -> natadd (natmul(a, n), a)
