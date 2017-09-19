@@ -13,4 +13,5 @@ let rec isInclude: name * metro -> bool = fun (n, m) ->
 let checkMetro: metro -> bool = fun x ->
     match x with
     | AREA (a, STATION b) -> (a == b)
-    | AREA (a, METRO b) -> isInclude(a, b)
+    | AREA (a, b) -> isInclude(a, b)
+    | _ -> false
