@@ -8,7 +8,6 @@ let rec isInclude: name * metro -> bool = fun (n, m) ->
     | STATION a -> (n == a)
     | AREA (a, b) -> (isInclude (a, b)) && (isInclude (n, b))
     | CONNECT (a, b) -> (isInclude (n, a)) || (isInclude (n, b))
-    | _ -> false
 
 let checkMetro: metro -> bool = fun x ->
     match x with
