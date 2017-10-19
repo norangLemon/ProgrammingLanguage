@@ -1,5 +1,5 @@
 # 6 "lexer.mll"
- 
+
  open Parser
  exception Eof
  exception LexicalError
@@ -9,7 +9,7 @@
  let keyword_tbl = Hashtbl.create 31
  let _ = List.iter (fun (keyword, tok) -> Hashtbl.add keyword_tbl keyword tok)
                    [("unit", UNIT);
-				    ("true", TRUE);
+                    ("true", TRUE);
                     ("false", FALSE);
                     ("not", NOT);
                     ("if", IF);
@@ -18,34 +18,34 @@
                     ("let", LET);
                     ("in", IN);
                     ("end", END);
-	    	        ("proc", PROC);
+                    ("proc", PROC);
                     ("while", WHILE);
                     ("do"   , DO);
                     ("read" , READ);
                     ("write", WRITE)
-                  ] 
+                  ]
 
 # 29 "lexer.ml"
 let __ocaml_lex_tables = {
-  Lexing.lex_base = 
+  Lexing.lex_base =
    "\000\000\233\255\234\255\235\255\236\255\237\255\239\255\240\255\
     \241\255\002\000\243\255\244\255\245\255\246\255\247\255\248\255\
     \249\255\250\255\251\255\085\000\160\000\022\000\002\000\254\255\
     \242\255\052\000\252\255\253\255\054\000\054\000\255\255\254\255\
     ";
-  Lexing.lex_backtrk = 
+  Lexing.lex_backtrk =
    "\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
     \255\255\022\000\255\255\255\255\255\255\255\255\255\255\255\255\
     \255\255\255\255\255\255\003\000\002\000\017\000\000\000\255\255\
     \255\255\255\255\255\255\255\255\003\000\003\000\255\255\255\255\
     ";
-  Lexing.lex_default = 
+  Lexing.lex_default =
    "\001\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
     \000\000\255\255\000\000\000\000\000\000\000\000\000\000\000\000\
     \000\000\000\000\000\000\255\255\255\255\255\255\255\255\000\000\
     \000\000\026\000\000\000\000\000\255\255\255\255\000\000\000\000\
     ";
-  Lexing.lex_trans = 
+  Lexing.lex_trans =
    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
     \000\000\022\000\022\000\022\000\022\000\022\000\000\000\022\000\
     \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
@@ -99,7 +99,7 @@ let __ocaml_lex_tables = {
     \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
     \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
     \000\000";
-  Lexing.lex_check = 
+  Lexing.lex_check =
    "\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
     \255\255\000\000\000\000\022\000\022\000\000\000\255\255\022\000\
     \255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
@@ -153,17 +153,17 @@ let __ocaml_lex_tables = {
     \255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
     \255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
     \255\255";
-  Lexing.lex_base_code = 
+  Lexing.lex_base_code =
    "";
-  Lexing.lex_backtrk_code = 
+  Lexing.lex_backtrk_code =
    "";
-  Lexing.lex_default_code = 
+  Lexing.lex_default_code =
    "";
-  Lexing.lex_trans_code = 
+  Lexing.lex_trans_code =
    "";
-  Lexing.lex_check_code = 
+  Lexing.lex_check_code =
    "";
-  Lexing.lex_code = 
+  Lexing.lex_code =
    "";
 }
 
@@ -291,7 +291,7 @@ and __ocaml_lex_start_rec lexbuf __ocaml_lex_state =
          (raise LexicalError)
 # 293 "lexer.ml"
 
-  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
+  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf;
       __ocaml_lex_start_rec lexbuf __ocaml_lex_state
 
 and comment lexbuf =
@@ -319,7 +319,7 @@ and __ocaml_lex_comment_rec lexbuf __ocaml_lex_state =
          (comment lexbuf)
 # 321 "lexer.ml"
 
-  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
+  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf;
       __ocaml_lex_comment_rec lexbuf __ocaml_lex_state
 
 ;;
