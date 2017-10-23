@@ -1,0 +1,75 @@
+let proc leaf (x) =
+    {l := unit, v:= x, r := unit}
+in
+let proc makeLtree (x, t) =
+    {l := t, v:= x, r := unit}
+in
+let proc makeRtree (x, t) =
+    {l := unit, v:= x, r := t}
+in
+let proc makeTree (x, t1, t2) =
+    {l := t1, v:= x, r := t2}
+in
+let proc isEmpty (t) =
+    t = unit
+in
+let proc rTree (t) = t.r
+in
+let proc lTree (t) = t.l
+in
+let proc nodeVal (t) = t.v
+in
+let proc dft (t) =
+    if (isEmpty (t)) then unit
+    else if (nodeVal (t) = unit) then unit
+    else
+        write (nodeVal (t));
+        dft (t.l);
+        dft (t.r)
+in
+let dummyQ := {v := unit, n := unit}
+in
+let proc makeQ (x) =
+    {v := x, n := dummyQ}
+in
+let proc isEmptyQ (q) =
+    q = dummyQ
+in
+let proc enQ (q, x) =
+    if (x = unit) then q
+    else if (q = dummyQ) then (
+        makeQ(x)
+    )
+    else (
+      let q_ := q.n in
+      enQ <q_, x>;
+      q.n = q_
+    )
+in
+let proc deQ (q) =
+    if (q = dummyQ) then dummyQ
+    else (
+        q := q.n
+    )
+in
+let proc bft (t) =
+    let r := t in
+    let l := t in
+    let q := makeQ (t) in
+    while (not (isEmptyQ (q))) do (
+        let t_ = q.v;
+        q := deQ <q>;
+        if (isEmpty (t_)) then unit
+        else
+        (
+            l := lTree (t_);
+            r := rTree (t_);
+            (
+                enQ <q, l> 
+                enQ <q, r> 
+            );
+            unit
+        )
+    )
+in
+2017
