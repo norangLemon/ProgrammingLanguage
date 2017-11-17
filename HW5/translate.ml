@@ -1,5 +1,5 @@
 (*
- * SNU 4190.310 Programming Languages 
+ * SNU 4190.310 Programming Languages
  * K-- to SM5 translator skeleton code
  * DongKwon Lee (dklee@ropas.snu.ac.kr)
  *)

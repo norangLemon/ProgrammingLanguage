@@ -1,6 +1,6 @@
 (*
  * SNU 4190.310 Programming Languages 2017 Fall
- *  K-- Interpreter 
+ *  K-- Interpreter
  * DongKwon Lee (dklee@ropas.snu.ac.kr)
  *)
 
@@ -24,7 +24,7 @@ struct
 end
 
 (* Memory Signature *)
-module type MEM = 
+module type MEM =
 sig
   type 'a t
   exception Not_allocated
@@ -54,20 +54,20 @@ struct
   type 'a t = M of Loc.t * 'a content list
   let empty = M (Loc.base,[])
 
-  let rec replace_nth = fun l n c -> 
+  let rec replace_nth = fun l n c ->
     match l with
     | h::t -> if n = 1 then c :: t else h :: (replace_nth t (n - 1) c)
     | [] -> raise Not_allocated
 
   let load (M (boundary,storage)) loc =
     match (List.nth storage ((Loc.diff boundary loc) - 1)) with
-    | V v -> v 
+    | V v -> v
     | U -> raise Not_initialized
 
   let store (M (boundary,storage)) loc content =
     M (boundary, replace_nth storage (Loc.diff boundary loc) (V content))
 
-  let alloc (M (boundary,storage)) = 
+  let alloc (M (boundary,storage)) =
     (boundary, M (Loc.increase boundary 1, U :: storage))
 end
 
@@ -109,7 +109,7 @@ sig
   | CALLR of id * id            (* call by referenece *)
   | READ of id
   | WRITE of exp
-    
+
   type program = exp
   type memory
   type env
@@ -152,7 +152,7 @@ struct
   | Num of int
   | Bool of bool
   | Unit
-    
+
   type memory = value Mem.t
   type env = (id, env_entry) Env.t
   and  env_entry = Addr of Loc.t | Proc of id * exp * env
@@ -179,13 +179,13 @@ struct
     try
       (match Env.lookup e x with
       | Addr l -> l
-      | Proc _ -> raise (Error "TypeError : not addr")) 
+      | Proc _ -> raise (Error "TypeError : not addr"))
     with Env.Not_bound -> raise (Error "Unbound")
 
   let lookup_env_proc e f =
     try
       (match Env.lookup e f with
-      | Addr _ -> raise (Error "TypeError : not proc") 
+      | Addr _ -> raise (Error "TypeError : not proc")
       | Proc (id, exp, env) -> (id, exp, env))
     with Env.Not_bound -> raise (Error "Unbound")
 
@@ -196,26 +196,26 @@ struct
     | TRUE -> (Bool true, mem)
     | FALSE -> (Bool false, mem)
     | VAR id -> (Mem.load mem (lookup_env_loc env id), mem)
-    | ADD (e1, e2) -> 
+    | ADD (e1, e2) ->
       let v1, mem' = eval mem env e1 in
       let v2, mem'' = eval mem' env e2 in
       (Num (value_int v1 + value_int v2), mem'')
-    | SUB (e1, e2) -> 
+    | SUB (e1, e2) ->
       let v1, mem' = eval mem env e1 in
       let v2, mem'' = eval mem' env e2 in
       (Num (value_int v1 - value_int v2), mem'')
-    | MUL (e1, e2) -> 
+    | MUL (e1, e2) ->
       let v1, mem' = eval mem env e1 in
       let v2, mem'' = eval mem' env e2 in
       (Num (value_int v1 * value_int v2), mem'')
-    | DIV (e1, e2) -> 
+    | DIV (e1, e2) ->
       let v1, mem' = eval mem env e1 in
       let v2, mem'' = eval mem' env e2 in
       (Num (value_int v1 / value_int v2), mem'')
     | EQUAL (e1, e2) ->
       let v1, mem' = eval mem env e1 in
       let v2, mem'' = eval mem' env e2 in
-      let b = 
+      let b =
         match (v1, v2) with
         | (Num n1, Num n2) -> n1 = n2
         | (Bool b1, Bool b2) -> b1 = b2
@@ -230,7 +230,7 @@ struct
     | NOT e1 ->
       let v, mem' = eval mem env e1 in
       (Bool (not (value_bool v)), mem')
-    | READ x -> 
+    | READ x ->
       let v = Num (read_int()) in
       let l = lookup_env_loc env x in
       (v, Mem.store mem l v)
@@ -252,9 +252,9 @@ struct
     | IF (e_cond, e_true, e_false) ->
       let (v_cond, mem') = eval mem env e_cond in
       if value_bool v_cond then eval mem' env e_true else eval mem' env e_false
-    | WHILE (e_cond, e_body) -> 
+    | WHILE (e_cond, e_body) ->
       let (v_cond, mem') = eval mem env e_cond in
-      if value_bool v_cond then 
+      if value_bool v_cond then
         let ( _ , mem'') = eval mem' env e_body in
         eval mem'' env (WHILE (e_cond, e_body))
       else
@@ -286,16 +286,16 @@ struct
       eval mem env'' e_body
 
     (* FOR evaluation helper function *)
-    and evalfor id n1 n2 mem env e = 
+    and evalfor id n1 n2 mem env e =
       if n1 > n2 then
-        (Unit, mem) 
+        (Unit, mem)
       else
         let loc = lookup_env_loc env id in
         let mem' = Mem.store mem loc (Num n1) in
         let ( _ , mem'') = eval mem' env e in
         evalfor id (n1 + 1) n2 mem'' env e
 
-  let run pgm = 
+  let run pgm =
     let (v, _ ) = eval emptyMemory emptyEnv pgm in
     v
 end
