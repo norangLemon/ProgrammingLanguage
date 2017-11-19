@@ -42,7 +42,7 @@ module Translator = struct
       let body = K.SEQ (K.ASSIGN (x, K.VAR f_idx),
         K.SEQ (e3, K.ASSIGN (f_idx, K.ADD (K.VAR f_idx, K.NUM 1)))) in
       let f_to_while = K.WHILE (f_cond, body) in
-      trans (K.LETV (f_idx, e1, K.LETV (f_num, e1, f_to_while)))
+      trans (K.LETV (f_idx, e1, K.LETV (f_num, e2, f_to_while)))
     end
     | K.LETV (x, e1, e2) ->
       trans e1 @ [Sm5.MALLOC; Sm5.BIND x; push_id x; Sm5.STORE] @
@@ -58,6 +58,6 @@ module Translator = struct
     | K.WRITE e ->
       let tmp = "!tmp" in
       trans e @ [Sm5.MALLOC; Sm5.BIND tmp; push_id tmp; Sm5.STORE; push_id tmp]
-      @ [Sm5.LOAD; Sm5.PUT; push_id tmp; Sm5.LOAD; Sm5.UNBIND]
+      @ [Sm5.LOAD; Sm5.PUT; push_id tmp; Sm5.LOAD; Sm5.UNBIND; Sm5.POP]
 
 end
