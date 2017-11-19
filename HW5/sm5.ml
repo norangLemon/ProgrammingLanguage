@@ -211,9 +211,72 @@ struct
       ((!loc_id, 0), m)
     else
       let _ = reachable_locs := [] in
-      (* TODO : Add the code that marks the reachable locations.
-       * let _ = ...
-       *)
+
+      let mark l =
+        reachable_locs := l :: !reachable_locs;
+        ()
+      in
+
+      let rec scavenge_val v =
+        match v with
+        | L l -> scavenge_loc l
+        | R r -> scavenge_rec r
+        | _ -> ()
+      and scavenge_loc l =
+        mark l;
+        try
+          let v = load l m in
+          scavenge_val v
+        with
+        | _ -> ()
+      and scavenge_rec r =
+        match r with
+        | [] -> ()
+        | (_, l) :: r_ ->
+            scavenge_loc l;
+            scavenge_rec r_;
+      in
+
+      let rec scavenge_env e =
+        match e with
+        | [] -> ()
+        | (_, env_val) :: e_ ->
+            scavenge_env_val env_val;
+            scavenge_env e_
+      and scavenge_env_val e =
+        match e with
+        | Loc l -> scavenge_loc l
+        | Proc (_, _, e_p) -> scavenge_env e_p
+      in
+
+      let rec scavenge_cont c =
+        match c with
+        | [] -> ()
+        | (cmd, e) :: c_ -> begin
+          scavenge_env e;
+          scavenge_cont c_
+        end
+      in
+
+      let rec scavenge_sta s =
+        match s with
+        | [] -> ()
+        | hd :: tl -> begin
+          let check = fun x ->
+            match x with
+            | V v -> scavenge_val v
+            | P (_, _, e) -> scavenge_env e
+            | M (_, env_val) -> scavenge_env_val env_val
+          in
+          check hd;
+          scavenge_sta tl
+        end
+      in
+
+      scavenge_sta s;
+      scavenge_env e;
+      scavenge_cont k;
+
       let new_m = List.filter (fun (l, _) -> List.mem l !reachable_locs) m in
       if List.length new_m < mem_limit then
         let _ = loc_id := !loc_id + 1 in
